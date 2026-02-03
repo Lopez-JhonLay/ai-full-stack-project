@@ -10,7 +10,7 @@ export interface Conversation {
   updatedAt: Date;
 }
 
-export class ConversationRepository {
+class ConversationRepository {
   private conversations = new Map<string, Conversation>();
 
   getConversation(conversationId: string): Conversation | null {
@@ -55,3 +55,5 @@ export class ConversationRepository {
     return this.conversations.has(conversationId);
   }
 }
+
+export default ConversationRepository;
