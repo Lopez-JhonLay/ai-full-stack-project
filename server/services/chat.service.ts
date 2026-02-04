@@ -24,7 +24,7 @@ class ChatService {
       model: 'gpt-4o-mini',
       input: messages,
       temperature: 0.2,
-      max_output_tokens: 100,
+      max_output_tokens: 500,
     });
 
     const assistantMessage: string = response.output_text;

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
 import { FiSend } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
@@ -27,12 +28,18 @@ function ChatBot() {
 
     reset();
 
-    const { data } = await axios.post<ChatResponse>('api/chat', {
-      prompt,
-      conversationId: conversationId.current,
-    });
+    try {
+      const { data } = await axios.post<ChatResponse>('/api/chat', {
+        prompt,
+        conversationId: conversationId.current,
+      });
 
-    setMessages((prev) => [...prev, { content: data.message, role: 'bot' }]);
+      console.log('API response:', data);
+
+      setMessages((prev) => [...prev, { content: data.message, role: 'bot' }]);
+    } catch (error) {
+      console.error('API request failed:', error);
+    }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
@@ -47,12 +54,12 @@ function ChatBot() {
       <div>
         <div className="flex flex-col gap-3 mb-10">
           {messages.map((message, index) => (
-            <p
+            <div
               key={index}
               className={`px-3 py-1 rounded-xl ${message.role === 'user' ? 'bg-blue-600 text-white self-end' : 'bg-gray-100 text-black self-start'}`}
             >
-              {message.content}
-            </p>
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
           ))}
         </div>
         <form onSubmit={handleSubmit(onSubmit)} onKeyDown={onKeyDown} className="relative">
