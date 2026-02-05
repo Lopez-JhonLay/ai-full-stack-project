@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
 import { FiSend } from 'react-icons/fi';
@@ -55,6 +55,15 @@ function ChatBot() {
     }
   };
 
+  const onCopyMessage = (e: React.ClipboardEvent) => {
+    const selection = window.getSelection()?.toString().trim();
+
+    if (!selection) return;
+
+    e.preventDefault();
+    e.clipboardData.setData('text/plain', selection);
+  };
+
   useEffect(() => {
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -66,6 +75,7 @@ function ChatBot() {
           {messages.map((message, index) => (
             <div
               key={index}
+              onCopy={onCopyMessage}
               className={`px-3 py-1 rounded-xl ${message.role === 'user' ? 'bg-blue-600 text-white self-end' : 'bg-gray-100 text-black self-start'}`}
             >
               <ReactMarkdown>{message.content}</ReactMarkdown>
