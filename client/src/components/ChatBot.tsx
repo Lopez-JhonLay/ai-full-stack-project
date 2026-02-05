@@ -21,6 +21,7 @@ type Message = {
 function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isBotTyping, setIsBotTyping] = useState(false);
+  const [error, setError] = useState('');
   const { register, handleSubmit, reset, formState } = useForm<FormData>();
 
   const conversationId = useRef(crypto.randomUUID());
@@ -28,8 +29,8 @@ function ChatBot() {
 
   const onSubmit = async ({ prompt }: FormData) => {
     setMessages((prev) => [...prev, { content: prompt, role: 'user' }]);
-
     setIsBotTyping(true);
+    setError('');
 
     reset({ prompt: '' });
 
@@ -45,6 +46,9 @@ function ChatBot() {
       setIsBotTyping(false);
     } catch (error) {
       console.error('API request failed:', error);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsBotTyping(false);
     }
   };
 
@@ -88,6 +92,7 @@ function ChatBot() {
             <div className="w-2 h-2 rounded-full bg-gray-800 animate-pulse [animation-delay:0.4s]"></div>
           </div>
         )}
+        {error && <p className="text-red-500">{error}</p>}
       </div>
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={onKeyDown} className="relative">
         <textarea
