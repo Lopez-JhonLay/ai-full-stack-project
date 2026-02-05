@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from './ui/button';
 import { FiSend } from 'react-icons/fi';
@@ -21,8 +21,10 @@ type Message = {
 function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isBotTyping, setIsBotTyping] = useState(false);
-  const conversationId = useRef(crypto.randomUUID());
   const { register, handleSubmit, reset, formState } = useForm<FormData>();
+
+  const conversationId = useRef(crypto.randomUUID());
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const onSubmit = async ({ prompt }: FormData) => {
     setMessages((prev) => [...prev, { content: prompt, role: 'user' }]);
@@ -53,6 +55,10 @@ function ChatBot() {
     }
   };
 
+  useEffect(() => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <div className="w-full max-w-3xl mx-auto p-4">
       <div>
@@ -73,7 +79,7 @@ function ChatBot() {
             </div>
           )}
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} onKeyDown={onKeyDown} className="relative">
+        <form onSubmit={handleSubmit(onSubmit)} onKeyDown={onKeyDown} ref={formRef} className="relative">
           <textarea
             {...register('prompt', { required: true, validate: (data) => data.trim().length > 0 })}
             className="w-full min-h-[120px] p-4 pr-16 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent shadow-sm transition-all duration-200 placeholder-gray-400"
