@@ -11,7 +11,7 @@ const client = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
 });
 
-const parkInfo = fs.readFileSync(path.join(__dirname, '..', 'prompts', 'WonderWorld.txt'), 'utf-8');
+const parkInfo = fs.readFileSync(path.join(__dirname, '..', 'prompts', 'WonderWorld.md'), 'utf-8');
 const instructions = template.replace('{{parkInfo}}', parkInfo);
 
 type ChatResponse = {
